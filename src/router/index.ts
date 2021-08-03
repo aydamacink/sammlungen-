@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Home from "../views/Home.vue";
-import Cat from "../views/Cat.vue";
+import Collections from "../views/Collections.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -18,9 +18,9 @@ const routes: Array<RouteRecordRaw> = [
       import(/* webpackChunkName: "about" */ "../views/About.vue"),
   },
   {
-    path: "/xyz",
-    name: "xyz",
-    component: Cat,
+    path: "/collections",
+    name: "collections",
+    component: Collections,
   },
 ];
 

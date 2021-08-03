@@ -10,5 +10,3 @@ export const client = createClient({
 //   .getEntry("5PeGS2SoZGSa4GuiQsigQu")
 //   .then(entry => console.log(entry))
 //   .catch(err => console.log(err));
-
-//
