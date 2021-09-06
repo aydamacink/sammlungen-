@@ -1,6 +1,7 @@
 <template>
   <div class="about">
     <h1>Collections</h1>
+    <select-filter />
     <div class="cards-container" v-if="dataReady">
       <ul>
         <li class="card" v-for="item in items" :key="item.id">
@@ -19,8 +20,6 @@
         </li>
       </ul>
     </div>
-
-    <Hi />
   </div>
 </template>
 
@@ -77,10 +76,12 @@ li {
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import { client } from "@/utils/contentful";
-import Hi from "@/components/Hi.vue";
+import SearchBar from "@/components/SearchBar.vue";
+import SelectFilter from "@/components/SelectFilter.vue";
 @Options({
   components: {
-    Hi,
+    SearchBar,
+    SelectFilter,
   },
 })
 export default class Cat extends Vue {
