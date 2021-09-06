@@ -12,7 +12,7 @@
 import { Options, Vue } from "vue-class-component";
 import { client } from "@/utils/contentful";
 
-@Options({
+Options({
   components: {},
   methods: {
     getTags() {
@@ -23,7 +23,13 @@ import { client } from "@/utils/contentful";
       return [...new Set(arrayOfTags)];
     },
   },
-})
+});
+
+interface X {
+  title: string;
+  tags: string[];
+}
+
 export default class SelectFilter extends Vue {
   dataReady!: boolean;
   items!: unknown;
@@ -39,7 +45,7 @@ export default class SelectFilter extends Vue {
 
   async mounted(): Promise<unknown[]> {
     // This API call will request an entry with the specified ID from the space defined at the top, using a space-specific access token.
-    const response = await client.getEntries();
+    const response = await client.getEntries<X>();
     const items = response.items;
     this.dataReady = true;
     console.log("select filter is called");
@@ -51,6 +57,9 @@ export default class SelectFilter extends Vue {
     const tags = [...new Set(arrayOfTags)];
     this.tags = tags;
     return tags;
-  }
+  } // maybe take a look at created instead of mounted . Mounted implies component stuck inside the DOM. -> time consuming process
+  // created -> just created.
+
+  //where should the api calls happen in which lyfestyle
 }
 </script>
