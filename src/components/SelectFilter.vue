@@ -87,7 +87,8 @@ export default class SelectFilter extends Vue {
     const inputId = target.id;
     const isActive = target.checked;
     const updatedSelected = {
-      ...this.selected[inputId],
+      ...this.selected,
+      [inputId]: isActive,
     };
     this.selected = updatedSelected;
     this.$emit("change-filter", updatedSelected);

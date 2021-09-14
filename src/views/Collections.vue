@@ -1,25 +1,29 @@
 <template>
   <div class="about">
     <h1>Collections</h1>
-    <select-filter />
-    <div class="cards-container" v-if="dataReady">
-      <ul>
-        <li class="card" v-for="item in items" :key="item.id">
-          <div class="title-container">
-            {{ item.fields.title }}
-          </div>
-          <div class="body-container">
-            {{ item.fields.description }}
-            <div class="author-container">
-              {{ item.fields.credits }}
-              <div class="tag-container">
-                {{ item.fields.tags.join(", ") }}
+    <section>
+      <select-filter @change-filter="setFilters"></select-filter>
+    </section>
+    <section>
+      <div class="cards-container" v-if="dataReady">
+        <ul>
+          <li class="card" v-for="item in items" :key="item.id">
+            <div class="title-container">
+              {{ item.fields.title }}
+            </div>
+            <div class="body-container">
+              {{ item.fields.description }}
+              <div class="author-container">
+                {{ item.fields.credits }}
+                <div class="tag-container">
+                  {{ item.fields.tags.join(", ") }}
+                </div>
               </div>
             </div>
-          </div>
-        </li>
-      </ul>
-    </div>
+          </li>
+        </ul>
+      </div>
+    </section>
   </div>
 </template>
 
@@ -84,14 +88,31 @@ import SelectFilter from "@/components/SelectFilter.vue";
     SelectFilter,
   },
 })
-export default class Cat extends Vue {
+export default class Collections extends Vue {
   dataReady!: boolean;
   items!: unknown;
+  activeSelected!: Record<string, boolean>;
 
-  data(): { dataReady: boolean; items: [] } {
+  data(): {
+    dataReady: boolean;
+    items: [];
+    activeSelected: Record<string, boolean>;
+  } {
     return {
       dataReady: false,
       items: [],
+      activeSelected: {
+        philosophical: true,
+        logical: true,
+        "short story": true,
+        "Curious Characters": true,
+        film: true,
+        "multiple interpretations": true,
+        dystopia: true,
+        confinement: true,
+        song: true,
+        novel: true,
+      },
     };
   }
 
@@ -103,6 +124,10 @@ export default class Cat extends Vue {
     console.log("data is here");
     this.items = items;
     return items;
+  }
+
+  setFilters(updatedSelected: Record<string, boolean>): void {
+    this.activeSelected = updatedSelected;
   }
 }
 </script>
