@@ -1,19 +1,19 @@
 <template>
-  <h3>Please select a tag to filter the items</h3>
-  <div id="v-model-select" class="demo">
-    <select v-model="selected">
-      <option disabled value="">Please select one</option>
-      <option v-for="tag in tags" :key="tag">{{ tag }}</option>
-    </select>
-  </div>
+  <h3>Please select a tag or more to to filter the items</h3>
+  <span class="filter-option" v-for="tag in tags" :key="tag">
+    <input type="checkbox" :id="tag" checked @change="setFilter" />
+    <label for="checkbox">{{ tag }}</label>
+  </span>
 </template>
 
 <script lang="ts">
+/* eslint-disable */
 import { Options, Vue } from "vue-class-component";
 import { client } from "@/utils/contentful";
 
 Options({
   components: {},
+  emits: [`change-filter`],
   methods: {
     getTags() {
       const arraysOfTags = this.items.map(
@@ -31,16 +31,36 @@ interface X {
 }
 
 export default class SelectFilter extends Vue {
+  [x: string]: any;
   dataReady!: boolean;
   items!: unknown;
-  tags!: unknown;
+  tags!: string[];
 
-  data(): { dataReady: boolean; items: []; tags: [] } {
+  data(): {
+    dataReady: boolean;
+    items: [];
+    tags: [];
+    selected: Record<string, boolean>;
+  } {
     return {
       dataReady: false,
       items: [],
       tags: [],
+      selected: {
+        philosophical: true,
+        logical: true,
+        "short story": true,
+        "Curious Characters": true,
+        film: true,
+        "multiple interpretations": true,
+        dystopia: true,
+        confinement: true,
+        song: true,
+        novel: true,
+      },
     };
+    // const selected = tags?.reduce((acc,curr)=> (acc[curr]=true,acc),{}); reduce to get the elements of the array to be the keys of the object and true to be their value
+    // I had typescript issues/
   }
 
   async mounted(): Promise<unknown[]> {
@@ -53,7 +73,7 @@ export default class SelectFilter extends Vue {
     const arraysOfTags = items.map((item) => item.fields.tags);
     const arrayOfTags = Array.prototype
       .concat(...arraysOfTags)
-      .map((tag) => tag.toUpperCase());
+      .map((tag) => tag);
     const tags = [...new Set(arrayOfTags)];
     this.tags = tags;
     return tags;
@@ -61,5 +81,16 @@ export default class SelectFilter extends Vue {
   // created -> just created.
 
   //where should the api calls happen in which lyfestyle
+
+  setFilter(event: Event) {
+    const target = event.target as HTMLInputElement;
+    const inputId = target.id;
+    const isActive = target.checked;
+    const updatedSelected = {
+      ...this.selected[inputId],
+    };
+    this.selected = updatedSelected;
+    this.$emit("change-filter", updatedSelected);
+  }
 }
 </script>
