@@ -2,20 +2,13 @@
   <div class="about">
     <h1>Collections</h1>
     <section>
-      <select-filter></select-filter>
+      <select-filter @change-filter="setFilters"></select-filter>
     </section>
     <section>
-      <!-- <div class="cards-container"> -->
-      <ul v-if="hasCollections">
-        <li v-for="item in filteredItems" :key="item.id">
-          {{ item.firstName }}
-        </li>
-      </ul>
-      <h3 v-else>No Items Found</h3>
-    </section>
-  </div>
-</template>
-<!-- <div class="title-container">
+      <div class="cards-container" v-if="dataReady">
+        <ul>
+          <li class="card" v-for="item in items" :key="item.id">
+            <div class="title-container">
               {{ item.fields.title }}
             </div>
             <div class="body-container">
@@ -26,13 +19,13 @@
                   {{ item.fields.tags.join(", ") }}
                 </div>
               </div>
-            </div> -->
-<!-- </li>
-      </ul> -->
-<!-- </div> -->
-<!-- </section>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
   </div>
-</template> -->
+</template>
 
 <style scoped>
 li {
@@ -94,14 +87,6 @@ import SelectFilter from "@/components/SelectFilter.vue";
     SearchBar,
     SelectFilter,
   },
-  computed: {
-    filteredItems() {
-      return this.$store.getters["collections/collections"];
-    },
-    hasItems() {
-      return this.$store.getters["collections/hasCollections"];
-    },
-  },
 })
 export default class Collections extends Vue {
   dataReady!: boolean;
@@ -135,7 +120,6 @@ export default class Collections extends Vue {
     // This API call will request an entry with the specified ID from the space defined at the top, using a space-specific access token.
     const response = await client.getEntries();
     const items = response.items;
-    console.log(items[0]);
     this.dataReady = true;
     console.log("data is here");
     this.items = items;
