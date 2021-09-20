@@ -2,12 +2,19 @@
   <div class="about">
     <h1>Collections</h1>
     <section>
-      <select-filter @change-filter="setFilters"></select-filter>
+      <div class="search-wrapper">
+        <input
+          class="input"
+          type="text"
+          v-model="search"
+          placeholder="Search by tags"
+        />
+      </div>
     </section>
     <section>
       <div class="cards-container" v-if="dataReady">
         <ul>
-          <li class="card" v-for="item in items" :key="item.id">
+          <li class="card" v-for="item in filteredList" :key="item.id">
             <div class="title-container">
               {{ item.fields.title }}
             </div>
@@ -30,6 +37,28 @@
 <style scoped>
 li {
   list-style-type: none;
+}
+
+.search-wrapper {
+  position: relative;
+}
+
+.label {
+  position: absolute;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.5);
+  top: 8px;
+  left: 12px;
+  z-index: -1;
+  transition: 0.15s all ease-in-out;
+}
+
+.input {
+  padding: 4px 12px;
+  color: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  transition: 0.15s all ease-in-out;
+  background: white;
 }
 
 .cards-container {
@@ -78,56 +107,50 @@ li {
 </style>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
+import { Vue } from "vue-class-component";
 import { client } from "@/utils/contentful";
-import SearchBar from "@/components/SearchBar.vue";
-import SelectFilter from "@/components/SelectFilter.vue";
-@Options({
-  components: {
-    SearchBar,
-    SelectFilter,
-  },
-})
+import { Entry } from "contentful";
+
+interface X {
+  title: string;
+  tags: string[];
+}
+
 export default class Collections extends Vue {
   dataReady!: boolean;
-  items!: unknown;
-  activeSelected!: Record<string, boolean>;
-
+  items!: Entry<X>[];
+  search!: string;
   data(): {
     dataReady: boolean;
     items: [];
-    activeSelected: Record<string, boolean>;
+    search: string;
   } {
     return {
       dataReady: false,
       items: [],
-      activeSelected: {
-        philosophical: true,
-        logical: true,
-        "short story": true,
-        "Curious Characters": true,
-        film: true,
-        "multiple interpretations": true,
-        dystopia: true,
-        confinement: true,
-        song: true,
-        novel: true,
-      },
+      search: "",
     };
+  }
+
+  get filteredList(): Entry<X>[] {
+    return this.search === ""
+      ? this.items
+      : this.items.filter((item) => {
+          console.log(item);
+          return item.fields.tags
+            .map((tag) => tag.toLowerCase())
+            .includes(this.search.toLowerCase());
+        });
   }
 
   async mounted(): Promise<unknown> {
     // This API call will request an entry with the specified ID from the space defined at the top, using a space-specific access token.
-    const response = await client.getEntries();
+    const response = await client.getEntries<X>();
     const items = response.items;
     this.dataReady = true;
     console.log("data is here");
     this.items = items;
     return items;
-  }
-
-  setFilters(updatedSelected: Record<string, boolean>): void {
-    this.activeSelected = updatedSelected;
   }
 }
 </script>
