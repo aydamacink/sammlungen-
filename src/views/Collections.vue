@@ -136,10 +136,9 @@ export default class Collections extends Vue {
     return this.search === ""
       ? this.items
       : this.items.filter((item) => {
-          console.log(item);
           return item.fields.tags
             .map((tag) => tag.toLowerCase())
-            .includes(this.search.toLowerCase());
+            .some((tag) => tag.includes(this.search.toLowerCase()));
         });
   }
 
