@@ -132,20 +132,29 @@ export default class Collections extends Vue {
     };
   }
 
-  get filteredList(): Entry<X>[] {
-    return this.search === ""
-      ? this.items
-      : this.items.filter((item) => {
-          return item.fields.tags
-            .map((tag) => tag.toLowerCase())
-            .some((tag) => tag.includes(this.search.toLowerCase()));
-        });
+  get filteredList(): Promise<unknown> {
+    // return this.search === ""
+    //   ? this.items
+    //   : this.items.filter((item) => {
+    //       return item.fields.tags
+    //         .map((tag) => tag.toLowerCase())
+    //         .some((tag) => tag.includes(this.search.toLowerCase()));
+    //     });
+    const response = client.getEntries<X>({
+      access_token: "ThmEQDURWMEx8GvPNh7gAmyLyfqZnOrpY7e_q7b4TNw",
+      content_type: "item",
+      "fields.tags": "novel",
+    });
+
+    const filteredItems = response;
+    return filteredItems;
   }
 
   async mounted(): Promise<unknown> {
     // This API call will request an entry with the specified ID from the space defined at the top, using a space-specific access token.
     const response = await client.getEntries<X>();
     const items = response.items;
+    console.log("items", items);
     this.dataReady = true;
     console.log("data is here");
     this.items = items;
