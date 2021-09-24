@@ -14,7 +14,7 @@
     <section>
       <div class="cards-container" v-if="dataReady">
         <ul>
-          <li class="card" v-for="item in filteredList" :key="item.id">
+          <li class="card" v-for="item in filteredItems" :key="item.id">
             <div class="title-container">
               {{ item.fields.title }}
             </div>
@@ -120,34 +120,36 @@ export default class Collections extends Vue {
   dataReady!: boolean;
   items!: Entry<X>[];
   search!: string;
+  filteredItems!: Entry<X>[];
   data(): {
     dataReady: boolean;
     items: [];
     search: string;
+    filteredItems: [];
   } {
     return {
       dataReady: false,
       items: [],
       search: "",
+      filteredItems: [],
     };
   }
 
-  get filteredList(): Promise<unknown> {
-    // return this.search === ""
-    //   ? this.items
-    //   : this.items.filter((item) => {
-    //       return item.fields.tags
-    //         .map((tag) => tag.toLowerCase())
-    //         .some((tag) => tag.includes(this.search.toLowerCase()));
-    //     });
-    const response = client.getEntries<X>({
+  get filteredList(): Entry<X>[] {
+    return this.search === "" ? this.items : this.filteredItems;
+  }
+
+  async beforeUpdate(): Promise<Entry<X>[]> {
+    const response = await client.getEntries<X>({
       access_token: "ThmEQDURWMEx8GvPNh7gAmyLyfqZnOrpY7e_q7b4TNw",
       content_type: "item",
       "fields.tags": "novel",
     });
-
-    const filteredItems = response;
-    return filteredItems;
+    const filteredItems = response.items;
+    this.filteredItems = filteredItems;
+    console.log("filteredItems", this.filteredItems);
+    console.log("typeof", typeof filteredItems);
+    return this.filteredItems;
   }
 
   async mounted(): Promise<unknown> {
