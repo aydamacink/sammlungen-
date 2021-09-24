@@ -14,7 +14,7 @@
     <section>
       <div class="cards-container" v-if="dataReady">
         <ul>
-          <li class="card" v-for="item in filteredItems" :key="item.id">
+          <li class="card" v-for="item in filteredList" :key="item.id">
             <div class="title-container">
               {{ item.fields.title }}
             </div>
