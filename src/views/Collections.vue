@@ -1,16 +1,59 @@
 <template>
   <div class="about">
     <h1>Collections</h1>
-    <section>
-      <div class="search-wrapper">
-        <input
-          class="input"
-          type="text"
-          v-model="search"
-          placeholder="Search by tags"
-        />
-      </div>
-    </section>
+    <h3>Please select a tag or more to to filter the items</h3>
+    <span>
+      <input type="checkbox" value="philosophical" v-model="selectedTags" />
+      <label for="checkbox">philosophical</label>
+    </span>
+    <span>
+      <input type="checkbox" value="logical" v-model="selectedTags" />
+      <label for="checkbox">logical</label>
+    </span>
+    <span>
+      <input type="checkbox" value="short story" v-model="selectedTags" />
+      <label for="checkbox">short story</label>
+    </span>
+    <span>
+      <input
+        type="checkbox"
+        value="Curious Characters"
+        v-model="selectedTags"
+      />
+      <label for="checkbox">Curious Characters</label>
+    </span>
+    <span>
+      <input
+        type="checkbox"
+        value="multiple interpretations"
+        v-model="selectedTags"
+      />
+      <label for="checkbox">multiple interpretations</label>
+    </span>
+    <span>
+      <input type="checkbox" value="dystopia" v-model="selectedTags" />
+      <label for="checkbox">dystopia</label>
+    </span>
+    <span>
+      <input type="checkbox" value="confinement" v-model="selectedTags" />
+      <label for="checkbox">confinement</label>
+    </span>
+    <span>
+      <input type="checkbox" value="song" v-model="selectedTags" />
+      <label for="checkbox">song</label>
+    </span>
+    <span>
+      <input type="checkbox" value="novel" v-model="selectedTags" />
+      <label for="checkbox">novel</label>
+    </span>
+    <div class="search-wrapper">
+      <input
+        class="input"
+        type="text"
+        v-model="search"
+        placeholder="Search by tags"
+      />
+    </div>
     <section>
       <div class="cards-container" v-if="dataReady">
         <ul>
@@ -121,34 +164,51 @@ export default class Collections extends Vue {
   items!: Entry<X>[];
   search!: string;
   filteredItems!: Entry<X>[];
+  selectedTags!: [];
+  tags!: string[];
   data(): {
     dataReady: boolean;
     items: [];
     search: string;
     filteredItems: [];
+    tags: string[];
+    selectedTags: [];
   } {
     return {
       dataReady: false,
       items: [],
       search: "",
       filteredItems: [],
+      tags: [],
+      selectedTags: [],
     };
   }
 
   get filteredList(): Entry<X>[] {
-    return this.search === "" ? this.items : this.filteredItems;
+    return this.selectedTags.length === 0 ? this.items : this.filteredItems;
+  }
+
+  get ListofTags(): string[] {
+    const arraysOfTags = this.items.map(
+      (item: { fields: { tags: unknown } }): unknown => item.fields.tags
+    );
+    const arrayOfTags = Array.prototype.concat(...arraysOfTags);
+    const tagList = [...new Set(arrayOfTags)];
+    this.tags = tagList;
+    return tagList;
   }
 
   async beforeUpdate(): Promise<Entry<X>[]> {
     const response = await client.getEntries<X>({
       access_token: "ThmEQDURWMEx8GvPNh7gAmyLyfqZnOrpY7e_q7b4TNw",
       content_type: "item",
-      "fields.tags": this.search,
+      "fields.tags[in]": this.selectedTags.join(","),
     });
     const filteredItems = response.items;
     this.filteredItems = filteredItems;
     console.log("filteredItems", this.filteredItems);
     console.log("typeof", typeof filteredItems);
+    console.log("selected", this.selectedTags);
     return this.filteredItems;
   }
 

@@ -1,20 +1,20 @@
 <template>
-  <div>
-    <b-form-textarea
-      id="textarea"
-      v-model="text"
-      placeholder="Enter something..."
-      rows="3"
-      max-rows="6"
-    ></b-form-textarea>
-  </div>
+  <h3>Please select a tag or more to to filter the items</h3>
+  <span>
+    <input type="checkbox" value="chocolate" v-model="selected" />
+    <label for="checkbox">chocolate</label>
+  </span>
+  <input type="checkbox" value="peanut" v-model="selected" />
+  <input type="checkbox" value="cookies" v-model="selected" />
+  <input type="checkbox" value="fruits" v-model="selected" />
 </template>
 <script lang="ts">
 import { Vue } from "vue-class-component";
 export default class About extends Vue {
-  data(): { text: string } {
+  data(): { iceCreamFlavors: string[]; selected: [] } {
     return {
-      text: "hello",
+      iceCreamFlavors: ["chocolate", "peanut", "cookies", "fruits"],
+      selected: [],
     };
   }
 }
