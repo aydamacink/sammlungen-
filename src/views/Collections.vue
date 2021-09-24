@@ -139,12 +139,6 @@ export default class Collections extends Vue {
     return this.search === "" ? this.items : this.filteredItems;
   }
 
-  // filterList() {
-  //   return item.fields.tags
-  //           .map((tag) => tag.toLowerCase())
-  //           .some((tag) => tag.includes(this.search.toLowerCase()));
-  // }
-
   async beforeUpdate(): Promise<Entry<X>[]> {
     const response = await client.getEntries<X>({
       access_token: "ThmEQDURWMEx8GvPNh7gAmyLyfqZnOrpY7e_q7b4TNw",
@@ -170,3 +164,6 @@ export default class Collections extends Vue {
   }
 }
 </script>
+
+/*TODO : at the moment the UI is not very helpful for the user since they woukd
+have to type the exact tag within the search field solve this Problem */
