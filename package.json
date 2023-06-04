@@ -10,7 +10,7 @@
   "dependencies": {
     "contentful": "^8.4.2",
     "core-js": "^3.6.5",
-    "tailwindcss": "^2.2.15",
+    "tailwindcss": "^2.2.19",
     "vue": "^3.0.0",
     "vue-class-component": "^8.0.0-0",
     "vue-router": "^4.0.0-0",
